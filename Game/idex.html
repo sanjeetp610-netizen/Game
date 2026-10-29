@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <meta name="theme-color" content="#10131b">
+        <title>Pixel Dungeon — Mini Adventure RPG</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+        <main class="app-shell">
+            <header class="brand-row">
+                <div class="brand-mark" aria-hidden="true">✦</div>
+                <div>
+                    <p class="eyebrow">A MINI ADVENTURE RPG</p>
+                    <h1>PIXEL <span>DUNGEON</span></h1>
+                </div>
+                <div class="header-chip"><span class="live-dot"></span> OFFLINE READY</div>
+            </header>
+            <section id="menuScreen" class="screen menu-screen">
+                <div class="menu-art" aria-hidden="true">
+                    <div class="moon"></div>
+                    <div class="art-torch torch-a">♨</div>
+                    <div class="art-torch torch-b">♨</div>
+                    <div class="art-floor"></div>
+                    <div class="art-hero">♟</div>
+                    <div class="art-gem">◆</div>
+                    <div class="art-spark spark-one">✦</div>
+                    <div class="art-spark spark-two">✧</div>
+                </div>
+                <div class="menu-copy">
+                    <p class="eyebrow gold">YOUR NEXT QUEST BEGINS HERE</p>
+                    <h2>Descend into<br><span>the unknown.</span></h2>
+                    <p class="intro">Explore forgotten halls, outsmart monsters, collect relics, and find your way to
+                        the heart of the dungeon.</p>
+                    <div class="menu-actions"><button id="newGameBtn" class="btn btn-primary">▶ &nbsp; Start New
+                            Game</button><button id="continueBtn" class="btn btn-secondary">↻ &nbsp; Continue
+                            Game</button><button id="howBtn" class="btn btn-quiet">How to Play
+                            <span>→</span></button><button id="settingsBtn" class="btn btn-quiet">Settings
+                            <span>⚙</span></button></div>
+                    <div class="record-row">
+                        <div><span class="stat-label">BEST SCORE</span><strong id="bestScoreMenu">0000</strong></div>
+                        <div><span class="stat-label">DEEPEST LEVEL</span><strong id="bestLevelMenu">01</strong></div>
+                        <div><span class="stat-label">DUNGEON RATING</span><strong>★ ★ ★</strong></div>
+                    </div>
+                </div>
+                <div class="menu-footer">WASD / ARROW KEYS <i>•</i> SPACE TO ATTACK <i>•</i> ESC TO PAUSE</div>
+            </section>
+            <section id="gameScreen" class="screen game-screen hidden" aria-label="Dungeon gameplay">
+                <div class="game-topbar">
+                    <div>
+                        <p class="eyebrow">CURRENT EXPEDITION</p>
+                        <h2 id="levelTitle">The Forgotten Halls <small>LEVEL 01</small></h2>
+                    </div>
+                    <div class="top-actions"><button id="soundBtn" class="icon-btn" title="Toggle sound"
+                            aria-label="Toggle sound">♫</button><button id="pauseBtn" class="icon-btn"
+                            title="Pause game" aria-label="Pause game">Ⅱ</button><button id="exitBtn" class="icon-btn"
+                            title="Return to menu" aria-label="Return to menu">⌂</button></div>
+                </div>
+                <div class="hud-grid">
+                    <div class="hud-card health-card">
+                        <div class="hud-heading"><span>♥ &nbsp; VITALITY</span><strong id="healthText">100 /
+                                100</strong></div>
+                        <div class="meter">
+                            <div id="healthBar" class="meter-fill health-fill"></div>
+                        </div>
+                        <div class="hud-sub" id="playerStatus">Feeling strong</div>
+                    </div>
+                    <div class="hud-card">
+                        <div class="hud-heading"><span>◈ &nbsp; COINS</span></div><strong class="big-stat"
+                            id="coinsText">0</strong>
+                        <div class="hud-sub">Gold collected</div>
+                    </div>
+                    <div class="hud-card">
+                        <div class="hud-heading"><span>✧ &nbsp; SCORE</span></div><strong class="big-stat"
+                            id="scoreText">0</strong>
+                        <div class="hud-sub">Adventure points</div>
+                    </div>
+                    <div class="hud-card">
+                        <div class="hud-heading"><span>⚔ &nbsp; POWER</span></div><strong class="big-stat"
+                            id="powerText">12</strong>
+                        <div class="hud-sub" id="defenseText">Defense 2</div>
+                    </div>
+                </div>
+                <div class="play-layout">
+                    <section class="canvas-panel">
+                        <div class="panel-heading"><span><span class="live-dot"></span> DUNGEON EXPLORATION</span><span
+                                id="objectiveText">Find the staircase</span></div>
+                        <div class="canvas-wrap"><canvas id="gameCanvas" width="800" height="512"
+                                aria-label="Pixel art dungeon. Move with WASD or arrow keys, attack with space."></canvas>
+                            <div id="toast" class="toast" role="status" aria-live="polite"></div>
+                            <div id="pauseOverlay" class="canvas-overlay hidden">
+                                <div class="overlay-box"><span class="overlay-icon">Ⅱ</span>
+                                    <h3>Expedition paused</h3>
+                                    <p>Catch your breath, adventurer.</p><button id="resumeBtn"
+                                        class="btn btn-primary">Resume adventure</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="canvas-legend"><span><i class="legend-dot hero-dot"></i> You</span><span><i
+                                    class="legend-dot enemy-dot"></i> Enemy</span><span><i
+                                    class="legend-dot loot-dot"></i> Loot</span><span class="legend-note">Explore every
+                                corner. The map reveals as you move.</span></div>
+                    </section>
+                    <aside class="side-column">
+                        <section class="side-card">
+                            <div class="side-title">
+                                <h3>Adventurer</h3><span class="level-badge" id="levelBadge">LV 1</span>
+                            </div>
+                            <div class="hero-mini">
+                                <div class="hero-avatar">♟</div>
+                                <div><strong>Dungeon Wanderer</strong><span id="weaponName">Rusty Blade</span></div>
+                            </div>
+                            <div class="equipment-row">
+                                <div><span>ATTACK</span><strong id="attackStat">12</strong></div>
+                                <div><span>DEFENSE</span><strong id="armorStat">2</strong></div>
+                                <div><span>POTIONS</span><strong id="potionCount">2</strong></div>
+                            </div><button id="potionBtn" class="btn btn-secondary btn-small">✚ &nbsp; Use potion
+                                <kbd>H</kbd></button>
+                        </section>
+                        <section class="side-card inventory-card">
+                            <div class="side-title">
+                                <h3>Satchel</h3><span class="tiny-label" id="inventoryCount">3 / 8 SLOTS</span>
+                            </div>
+                            <div id="inventoryList" class="inventory-list"></div>
+                            <p class="side-hint" id="inventoryHint">Walk over items to collect them.</p>
+                        </section>
+                        <section class="side-card minimap-card">
+                            <div class="side-title">
+                                <h3>Map fragment</h3><span class="tiny-label">AUTO-MAPPED</span>
+                            </div><canvas id="miniMap" width="220" height="124"
+                                aria-label="Mini-map of explored dungeon"></canvas>
+                            <p class="side-hint">Seek the golden staircase to descend.</p>
+                        </section>
+                    </aside>
+                </div>
+                <div class="mobile-controls">
+                    <div class="dpad"><button data-move="up" aria-label="Move up">▲</button>
+                        <div><button data-move="left" aria-label="Move left">◀</button><button data-move="down"
+                                aria-label="Move down">▼</button><button data-move="right"
+                                aria-label="Move right">▶</button></div>
+                    </div><button id="touchAttack" class="btn btn-primary attack-touch">⚔ Attack</button>
+                </div>
+                <footer class="game-footer"><span><kbd>W A S D</kbd> / <kbd>↑ ↓ ← →</kbd>
+                        Move</span><span><kbd>SPACE</kbd> Attack</span><span><kbd>H</kbd>
+                        Heal</span><span><kbd>ESC</kbd> Pause</span><span id="saveStatus">Progress saves
+                        automatically</span></footer>
+            </section>
+            <section id="modalScreen" class="modal-screen hidden" role="dialog" aria-modal="true"
+                aria-labelledby="modalTitle">
+                <div class="modal-card"><button id="modalClose" class="modal-close" aria-label="Close dialog">×</button>
+                    <p class="eyebrow gold" id="modalEyebrow">DUNGEON GUIDE</p>
+                    <h2 id="modalTitle">How to Play</h2>
+                    <div id="modalBody" class="modal-body"></div>
+                    <div id="modalActions" class="modal-actions"></div>
+                </div>
+            </section>
+            <div class="global-footer">PIXEL DUNGEON <span>•</span> A LITTLE ADVENTURE, A LOT OF COURAGE</div>
+        </main>
+        <script src="script.js"></script>
+    </body>
+
+</html>
